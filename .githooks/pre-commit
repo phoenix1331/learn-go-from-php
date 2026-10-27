@@ -1,0 +1,18 @@
+#!/bin/sh
+# Pre-commit checks: formatting, vet and tests.
+# Enable once per clone with:  git config core.hooksPath .githooks
+set -e
+
+# Fail if any files aren't gofmt'd
+unformatted=$(gofmt -l .)
+if [ -n "$unformatted" ]; then
+  echo "These files need formatting (run: gofmt -w .):"
+  echo "$unformatted"
+  exit 1
+fi
+
+echo "Running go vet..."
+go vet ./...
+
+echo "Running go test..."
+go test ./...

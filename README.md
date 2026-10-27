@@ -4,6 +4,10 @@
 
 <h1 align="center">Learn Go from PHP</h1>
 
+<p align="center">
+  <a href="https://github.com/phoenix1331/learn-go-from-php/actions/workflows/ci.yml"><img src="https://github.com/phoenix1331/learn-go-from-php/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+</p>
+
 Hands-on, annotated Go tutorials for PHP and Laravel developers. Each lesson is a small, runnable program that explains Go concepts side by side with their PHP equivalents, starting from the basics and building towards practical tools you can use alongside your PHP apps.
 
 ## Requirements
@@ -25,6 +29,18 @@ go run ./01-basics
 ```
 
 All commands are run from the repo root.
+
+### Enable the pre-commit hook
+
+The repo includes a git hook in `.githooks/pre-commit`. Before each commit, it checks formatting with `gofmt`, then runs `go vet` and `go test`. Git doesn't enable hooks automatically, so turn it on once after cloning:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+If the hook blocks a commit because of formatting, run `gofmt -w .` and commit again. To skip the hook in an emergency, use `git commit --no-verify`.
+
+The same checks run on GitHub Actions for every push to `main` and every pull request (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)), with the race detector enabled for tests.
 
 ## Lessons
 
