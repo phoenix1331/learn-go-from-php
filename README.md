@@ -63,6 +63,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 13 | [Packages & modules](13-packages/main.go) | Packages vs modules, exported names, `internal/`, `go get`, `go.mod` / `go.sum`, `go mod tidy` | `go run ./13-packages` |
 | 14 | [Context](14-context/main.go) | `context.Context`, `WithTimeout`, `WithCancel`, passing ctx through layers, request values, cancellation causes | `go run ./14-context` |
 | 15 | [Files & streaming](15-files-streaming/main.go) | `os`, `bufio`, `io.Reader` / `io.Writer`, streaming a large CSV, gzip, hashing, `io.Copy` | `go run ./15-files-streaming` |
+| 16 | [HTTP client](16-http-client/main.go) | Timeouts, status checks, JSON GET/POST, retries with backoff, concurrency limits with a semaphore | `go run ./16-http-client` |
 
 ### Lesson 10 examples
 
@@ -119,6 +120,15 @@ go run ./15-files-streaming
 go test -v ./15-files-streaming     # tests feed CSV from a string
 ```
 
+### Lesson 16 examples
+
+No internet needed: the lesson starts its own fake API on a random local port.
+
+```bash
+go run ./16-http-client
+go test -race -v ./16-http-client
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -127,6 +137,7 @@ go test -v ./15-files-streaming     # tests feed CSV from a string
 - **Lesson 13:** import `13-packages/internal/slug` from another lesson and watch the compiler refuse.
 - **Lesson 14:** raise the handler timeout in section 3 to 300ms and watch the orders query succeed.
 - **Lesson 15:** change `rows` to `2_000_000` and compare ReadAll's memory use (about 230 MB) with streaming's (about 0).
+- **Lesson 16:** add a limit of 2 to section 5 and predict its time before running.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
