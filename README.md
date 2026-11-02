@@ -62,6 +62,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 12 | [Testing](12-testing/mathutil_test.go) | `go test`, table-driven tests, subtests, benchmarks, coverage | `go test -v ./12-testing` |
 | 13 | [Packages & modules](13-packages/main.go) | Packages vs modules, exported names, `internal/`, `go get`, `go.mod` / `go.sum`, `go mod tidy` | `go run ./13-packages` |
 | 14 | [Context](14-context/main.go) | `context.Context`, `WithTimeout`, `WithCancel`, passing ctx through layers, request values, cancellation causes | `go run ./14-context` |
+| 15 | [Files & streaming](15-files-streaming/main.go) | `os`, `bufio`, `io.Reader` / `io.Writer`, streaming a large CSV, gzip, hashing, `io.Copy` | `go run ./15-files-streaming` |
 
 ### Lesson 10 examples
 
@@ -111,6 +112,13 @@ go run ./14-context
 go test -race -v ./14-context       # tests use t.Context()
 ```
 
+### Lesson 15 examples
+
+```bash
+go run ./15-files-streaming
+go test -v ./15-files-streaming     # tests feed CSV from a string
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -118,6 +126,7 @@ go test -race -v ./14-context       # tests use t.Context()
 - **Any lesson:** add an unused variable or import and see the compiler refuse to build it.
 - **Lesson 13:** import `13-packages/internal/slug` from another lesson and watch the compiler refuse.
 - **Lesson 14:** raise the handler timeout in section 3 to 300ms and watch the orders query succeed.
+- **Lesson 15:** change `rows` to `2_000_000` and compare ReadAll's memory use (about 230 MB) with streaming's (about 0).
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
