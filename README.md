@@ -61,6 +61,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 11 | [HTTP server](11-http-server/main.go) | Standard-library JSON API, routing with methods and `{params}`, middleware | `go run ./11-http-server` |
 | 12 | [Testing](12-testing/mathutil_test.go) | `go test`, table-driven tests, subtests, benchmarks, coverage | `go test -v ./12-testing` |
 | 13 | [Packages & modules](13-packages/main.go) | Packages vs modules, exported names, `internal/`, `go get`, `go.mod` / `go.sum`, `go mod tidy` | `go run ./13-packages` |
+| 14 | [Context](14-context/main.go) | `context.Context`, `WithTimeout`, `WithCancel`, passing ctx through layers, request values, cancellation causes | `go run ./14-context` |
 
 ### Lesson 10 examples
 
@@ -103,12 +104,20 @@ go doc ./13-packages/greet          # package docs from comments
 go list -m all                      # every module in the build
 ```
 
+### Lesson 14 examples
+
+```bash
+go run ./14-context
+go test -race -v ./14-context       # tests use t.Context()
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
 - **Lesson 08:** remove the `mu.Lock()` / `mu.Unlock()` lines, then run `go run -race ./08-concurrency` to see Go's race detector catch the bug.
 - **Any lesson:** add an unused variable or import and see the compiler refuse to build it.
 - **Lesson 13:** import `13-packages/internal/slug` from another lesson and watch the compiler refuse.
+- **Lesson 14:** raise the handler timeout in section 3 to 300ms and watch the orders query succeed.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
