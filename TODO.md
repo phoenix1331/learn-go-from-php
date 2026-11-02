@@ -23,13 +23,13 @@ Where I'm up to, what's next, and notes to pick up from later.
 | 11 | HTTP server | [ ] | |
 | 12 | Testing | [ ] | |
 
-## Part 2: Real-world Go (planned, not yet built)
+## Part 2: Real-world Go (13 built, 14–24 planned)
 
 These build towards using Go for heavy lifting alongside PHP / Laravel.
 
 | # | Lesson | What it would cover | Status |
 |---|---|---|---|
-| 13 | Packages & modules | Splitting code into packages, `internal/`, `go get` third-party modules, `go.sum` | [ ] |
+| 13 | Packages & modules (built) | Splitting code into packages, `internal/`, `go get` third-party modules, `go.sum` | [ ] |
 | 14 | Context | `context.Context` for timeouts and cancellation, passing it through calls | [ ] |
 | 15 | Files & streaming | `os`, `bufio`, `io.Reader`/`Writer`, streaming a large CSV without loading it all | [ ] |
 | 16 | HTTP client | Calling APIs, timeouts, retries, fetching many URLs concurrently with a limit | [ ] |

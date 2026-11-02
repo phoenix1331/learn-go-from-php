@@ -44,7 +44,7 @@ The same checks run on GitHub Actions for every push to `main` and every pull re
 
 ## Lessons
 
-Work through them in order. Each one builds on the last. Progress, planned future lessons and session notes are tracked in [LEARNING_LOG.md](LEARNING_LOG.md).
+Work through them in order. Each one builds on the last. Progress and planned future lessons are tracked in [TODO.md](TODO.md).
 
 | # | Lesson | Topics | Run |
 |---|---|---|---|
@@ -60,6 +60,7 @@ Work through them in order. Each one builds on the last. Progress, planned futur
 | 10 | [JSON CLI tool](10-json-cli/main.go) | Flags, JSON encode/decode, stdin/stdout/stderr, exit codes | `go run ./10-json-cli --name=You --pretty` |
 | 11 | [HTTP server](11-http-server/main.go) | Standard-library JSON API, routing with methods and `{params}`, middleware | `go run ./11-http-server` |
 | 12 | [Testing](12-testing/mathutil_test.go) | `go test`, table-driven tests, subtests, benchmarks, coverage | `go test -v ./12-testing` |
+| 13 | [Packages & modules](13-packages/main.go) | Packages vs modules, exported names, `internal/`, `go get`, `go.mod` / `go.sum`, `go mod tidy` | `go run ./13-packages` |
 
 ### Lesson 10 examples
 
@@ -93,11 +94,21 @@ go test -bench=. ./12-testing  # benchmarks
 go test ./...                  # every package in the repo
 ```
 
+### Lesson 13 examples
+
+```bash
+go run ./13-packages
+go test ./13-packages/...           # tests for the internal slug package
+go doc ./13-packages/greet          # package docs from comments
+go list -m all                      # every module in the build
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
 - **Lesson 08:** remove the `mu.Lock()` / `mu.Unlock()` lines, then run `go run -race ./08-concurrency` to see Go's race detector catch the bug.
 - **Any lesson:** add an unused variable or import and see the compiler refuse to build it.
+- **Lesson 13:** import `13-packages/internal/slug` from another lesson and watch the compiler refuse.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
