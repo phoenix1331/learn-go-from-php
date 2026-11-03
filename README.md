@@ -64,6 +64,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 14 | [Context](14-context/main.go) | `context.Context`, `WithTimeout`, `WithCancel`, passing ctx through layers, request values, cancellation causes | `go run ./14-context` |
 | 15 | [Files & streaming](15-files-streaming/main.go) | `os`, `bufio`, `io.Reader` / `io.Writer`, streaming a large CSV, gzip, hashing, `io.Copy` | `go run ./15-files-streaming` |
 | 16 | [HTTP client](16-http-client/main.go) | Timeouts, status checks, JSON GET/POST, retries with backoff, concurrency limits with a semaphore | `go run ./16-http-client` |
+| 17 | [Databases](17-databases/main.go) | `database/sql` with SQLite, placeholders vs SQL injection, NULLs, transactions, prepared statements | `go run ./17-databases` |
 
 ### Lesson 10 examples
 
@@ -129,6 +130,15 @@ go run ./16-http-client
 go test -race -v ./16-http-client
 ```
 
+### Lesson 17 examples
+
+Uses [`modernc.org/sqlite`](https://pkg.go.dev/modernc.org/sqlite), a pure-Go SQLite driver, so no C compiler is needed. The database is a temp file that's deleted afterwards.
+
+```bash
+go run ./17-databases
+go test -race -v ./17-databases     # each test gets its own SQLite file
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -138,6 +148,7 @@ go test -race -v ./16-http-client
 - **Lesson 14:** raise the handler timeout in section 3 to 300ms and watch the orders query succeed.
 - **Lesson 15:** change `rows` to `2_000_000` and compare ReadAll's memory use (about 230 MB) with streaming's (about 0).
 - **Lesson 16:** add a limit of 2 to section 5 and predict its time before running.
+- **Lesson 17:** delete `defer tx.Rollback()` in `PlaceOrder` and see a leaked transaction lock the database.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
