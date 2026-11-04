@@ -23,7 +23,7 @@ Where I'm up to, what's next, and notes to pick up from later.
 | 11 | HTTP server | [ ] | |
 | 12 | Testing | [ ] | |
 
-## Part 2: Real-world Go (13–17 built, 18–24 planned)
+## Part 2: Real-world Go (13–18 built, 19–24 planned)
 
 These build towards using Go for heavy lifting alongside PHP / Laravel.
 
@@ -34,7 +34,7 @@ These build towards using Go for heavy lifting alongside PHP / Laravel.
 | 15 | Files & streaming (built) | `os`, `bufio`, `io.Reader`/`Writer`, streaming a large CSV without loading it all | [ ] |
 | 16 | HTTP client (built) | Calling APIs, timeouts, retries, fetching many URLs concurrently with a limit | [ ] |
 | 17 | Databases (built) | `database/sql` with SQLite, queries, transactions, avoiding SQL injection | [ ] |
-| 18 | Config & logging | Env vars, `log/slog` structured logging, sensible defaults | [ ] |
+| 18 | Config & logging (built) | Env vars, `log/slog` structured logging, sensible defaults | [ ] |
 | 19 | Graceful shutdown | OS signals, finishing in-flight work before exiting | [ ] |
 | 20 | Advanced testing | `httptest`, fakes via interfaces, fuzz tests, race detector in tests | [ ] |
 | 21 | Laravel ↔ Go queue worker | Laravel pushes jobs to Redis, a Go worker processes them and reports back | [ ] |

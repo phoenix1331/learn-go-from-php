@@ -65,6 +65,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 15 | [Files & streaming](15-files-streaming/main.go) | `os`, `bufio`, `io.Reader` / `io.Writer`, streaming a large CSV, gzip, hashing, `io.Copy` | `go run ./15-files-streaming` |
 | 16 | [HTTP client](16-http-client/main.go) | Timeouts, status checks, JSON GET/POST, retries with backoff, concurrency limits with a semaphore | `go run ./16-http-client` |
 | 17 | [Databases](17-databases/main.go) | `database/sql` with SQLite, placeholders vs SQL injection, NULLs, transactions, prepared statements | `go run ./17-databases` |
+| 18 | [Config & logging](18-config-logging/main.go) | Env vars and flags into a typed `Config`, validation with `errors.Join`, `log/slog` text/JSON, `With`, request IDs from ctx, redacting secrets | `go run ./18-config-logging` |
 
 ### Lesson 10 examples
 
@@ -139,6 +140,18 @@ go run ./17-databases
 go test -race -v ./17-databases     # each test gets its own SQLite file
 ```
 
+### Lesson 18 examples
+
+Sections 5–8 use the logger built from your config, so changing the environment or flags changes their output.
+
+```bash
+go run ./18-config-logging
+LOG_FORMAT=json go run ./18-config-logging -log-level=debug
+PORT=eighty WORKERS=0 go run ./18-config-logging     # fails fast with every problem listed
+go run ./18-config-logging -h
+go test -v ./18-config-logging
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -149,6 +162,7 @@ go test -race -v ./17-databases     # each test gets its own SQLite file
 - **Lesson 15:** change `rows` to `2_000_000` and compare ReadAll's memory use (about 230 MB) with streaming's (about 0).
 - **Lesson 16:** add a limit of 2 to section 5 and predict its time before running.
 - **Lesson 17:** delete `defer tx.Rollback()` in `PlaceOrder` and see a leaked transaction lock the database.
+- **Lesson 18:** delete `WithAttrs` from `contextHandler` and watch `TestRequestIDSurvivesWith` catch the lost request IDs.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
