@@ -69,6 +69,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 19 | [Graceful shutdown](19-graceful-shutdown/main.go) | OS signals, `signal.NotifyContext`, `http.Server.Shutdown`, grace periods, draining background workers, shutdown order | `go run ./19-graceful-shutdown` |
 | 20 | [Advanced testing](20-advanced-testing/doc.go) | `httptest` recorders and servers, fakes and spies via interfaces, fuzz tests, the race detector, fake time with `testing/synctest` | `go test -race -v ./20-advanced-testing` |
 | 21 | [Laravel ↔ Go queue worker](21-queue-worker/main.go) | Sharing a JSON job contract with Laravel, crash-safe `BLMOVE`, retries with backoff, transactions, reporting back through `queue:work` | `go run ./21-queue-worker` |
+| 22 | [Project: CSV importer](22-csv-importer/main.go) | Streaming validation, batched upserts, a rejects file, stdout/stderr/exit-code contract with Laravel's `Process`, clean timeouts | `go run ./22-csv-importer -demo` |
 
 ### Lesson 10 examples
 
@@ -198,6 +199,26 @@ php artisan queue:work redis --queue=go-results --stop-when-empty
 
 The result is written to `storage/logs/laravel.log` by `GoResultHandler`.
 
+### Lesson 22 examples
+
+```bash
+go run ./22-csv-importer -demo
+go test -race -v ./22-csv-importer
+
+go build -o bin/csvimport ./22-csv-importer
+bin/csvimport -generate=1000000 > customers.csv
+bin/csvimport -db=app.sqlite -init -max-rejects=0 customers.csv     # flags go before the filename
+```
+
+To call it from a Laravel app using SQLite, copy the contents of [`22-csv-importer/laravel`](22-csv-importer/laravel) into your app, then:
+
+```bash
+go build -o /path/to/your-app/bin/csvimport ./22-csv-importer
+php artisan migrate
+php artisan customers:import customers.csv --dry-run
+php artisan customers:import customers.csv
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -212,6 +233,7 @@ The result is written to `storage/logs/laravel.log` by `GoResultHandler`.
 - **Lesson 19:** change `context.WithoutCancel(ctx)` to plain `ctx` in `Pool.Run` and see every in-flight job abort the moment the signal arrives.
 - **Lesson 20:** swap `FormatMoney` for the simple arithmetic version in `doc.go` and let the fuzzer find the bug your tests missed.
 - **Lesson 21:** run `-serve`, queue a slow `sleep` job, `kill -9` the worker, restart it and watch the job recover.
+- **Lesson 22:** run the import with `-batch=1` and compare the time with the default of 1000.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
