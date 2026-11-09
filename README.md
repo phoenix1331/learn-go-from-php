@@ -68,6 +68,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 18 | [Config & logging](18-config-logging/main.go) | Env vars and flags into a typed `Config`, validation with `errors.Join`, `log/slog` text/JSON, `With`, request IDs from ctx, redacting secrets | `go run ./18-config-logging` |
 | 19 | [Graceful shutdown](19-graceful-shutdown/main.go) | OS signals, `signal.NotifyContext`, `http.Server.Shutdown`, grace periods, draining background workers, shutdown order | `go run ./19-graceful-shutdown` |
 | 20 | [Advanced testing](20-advanced-testing/doc.go) | `httptest` recorders and servers, fakes and spies via interfaces, fuzz tests, the race detector, fake time with `testing/synctest` | `go test -race -v ./20-advanced-testing` |
+| 21 | [Laravel ↔ Go queue worker](21-queue-worker/main.go) | Sharing a JSON job contract with Laravel, crash-safe `BLMOVE`, retries with backoff, transactions, reporting back through `queue:work` | `go run ./21-queue-worker` |
 
 ### Lesson 10 examples
 
@@ -178,6 +179,25 @@ go test -fuzz=FuzzMoneyRoundTrip -fuzztime=10s ./20-advanced-testing
 go test -fuzz=FuzzPlaceOrderBody -fuzztime=10s ./20-advanced-testing
 ```
 
+### Lesson 21 examples
+
+No Redis needed: the tour and tests use [`miniredis`](https://github.com/alicebob/miniredis), a Redis server written in Go.
+
+```bash
+go run ./21-queue-worker
+go test -race -v ./21-queue-worker
+```
+
+To connect a real Laravel app, copy the two classes from [`21-queue-worker/laravel/app`](21-queue-worker/laravel/app) into your app's `app/` folder, then start the worker. Add `-embedded` if you have no Redis running. If your app's Redis prefix isn't the default for an app named Laravel, pass it with `-prefix`.
+
+```bash
+go run ./21-queue-worker -serve -embedded
+php artisan tinker --execute="App\Support\GoQueue::push('sum', ['numbers' => [1, 2, 3.5]]);"
+php artisan queue:work redis --queue=go-results --stop-when-empty
+```
+
+The result is written to `storage/logs/laravel.log` by `GoResultHandler`.
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -191,6 +211,7 @@ go test -fuzz=FuzzPlaceOrderBody -fuzztime=10s ./20-advanced-testing
 - **Lesson 18:** delete `WithAttrs` from `contextHandler` and watch `TestRequestIDSurvivesWith` catch the lost request IDs.
 - **Lesson 19:** change `context.WithoutCancel(ctx)` to plain `ctx` in `Pool.Run` and see every in-flight job abort the moment the signal arrives.
 - **Lesson 20:** swap `FormatMoney` for the simple arithmetic version in `doc.go` and let the fuzzer find the bug your tests missed.
+- **Lesson 21:** run `-serve`, queue a slow `sleep` job, `kill -9` the worker, restart it and watch the job recover.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
