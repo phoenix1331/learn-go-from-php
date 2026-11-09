@@ -66,6 +66,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 16 | [HTTP client](16-http-client/main.go) | Timeouts, status checks, JSON GET/POST, retries with backoff, concurrency limits with a semaphore | `go run ./16-http-client` |
 | 17 | [Databases](17-databases/main.go) | `database/sql` with SQLite, placeholders vs SQL injection, NULLs, transactions, prepared statements | `go run ./17-databases` |
 | 18 | [Config & logging](18-config-logging/main.go) | Env vars and flags into a typed `Config`, validation with `errors.Join`, `log/slog` text/JSON, `With`, request IDs from ctx, redacting secrets | `go run ./18-config-logging` |
+| 19 | [Graceful shutdown](19-graceful-shutdown/main.go) | OS signals, `signal.NotifyContext`, `http.Server.Shutdown`, grace periods, draining background workers, shutdown order | `go run ./19-graceful-shutdown` |
 
 ### Lesson 10 examples
 
@@ -152,6 +153,19 @@ go run ./18-config-logging -h
 go test -v ./18-config-logging
 ```
 
+### Lesson 19 examples
+
+The tour sends signals to itself. Use `-serve` to press `Ctrl+C` yourself.
+
+```bash
+go run ./19-graceful-shutdown
+go test -race -v ./19-graceful-shutdown
+
+go run ./19-graceful-shutdown -serve
+curl 'localhost:8080/slow?ms=2000'                # second terminal, then Ctrl+C the server
+curl -X POST 'localhost:8080/jobs?ms=2000'        # queue background work
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -163,6 +177,7 @@ go test -v ./18-config-logging
 - **Lesson 16:** add a limit of 2 to section 5 and predict its time before running.
 - **Lesson 17:** delete `defer tx.Rollback()` in `PlaceOrder` and see a leaked transaction lock the database.
 - **Lesson 18:** delete `WithAttrs` from `contextHandler` and watch `TestRequestIDSurvivesWith` catch the lost request IDs.
+- **Lesson 19:** change `context.WithoutCancel(ctx)` to plain `ctx` in `Pool.Run` and see every in-flight job abort the moment the signal arrives.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
