@@ -23,7 +23,7 @@ Where I'm up to, what's next, and notes to pick up from later.
 | 11 | HTTP server | [ ] | |
 | 12 | Testing | [ ] | |
 
-## Part 2: Real-world Go (13–23 built, 24 planned)
+## Part 2: Real-world Go (13–24 built)
 
 These build towards using Go for heavy lifting alongside PHP / Laravel.
 
@@ -40,7 +40,7 @@ These build towards using Go for heavy lifting alongside PHP / Laravel.
 | 21 | Laravel ↔ Go queue worker (built) | Laravel pushes jobs to Redis, a Go worker processes them and reports back | [ ] |
 | 22 | Project: CSV importer (built) | Validate and import a big CSV, called from Laravel as a CLI binary | [ ] |
 | 23 | Deployment (built) | Cross-compiling, Docker multi-stage builds, running as a service | [ ] |
-| 24 | Performance | Benchmarks, `pprof` profiling, reducing allocations | [ ] |
+| 24 | Performance (built) | Benchmarks, `pprof` profiling, reducing allocations | [ ] |
 
 Optional extras to slot in: iterators (`range` over functions), `embed` for bundling files into a binary, `time` and scheduling, WebSockets.
 

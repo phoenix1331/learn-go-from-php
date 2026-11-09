@@ -71,6 +71,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 21 | [Laravel ↔ Go queue worker](21-queue-worker/main.go) | Sharing a JSON job contract with Laravel, crash-safe `BLMOVE`, retries with backoff, transactions, reporting back through `queue:work` | `go run ./21-queue-worker` |
 | 22 | [Project: CSV importer](22-csv-importer/main.go) | Streaming validation, batched upserts, a rejects file, stdout/stderr/exit-code contract with Laravel's `Process`, clean timeouts | `go run ./22-csv-importer -demo` |
 | 23 | [Deployment](23-deployment/main.go) | Cross-compiling, `-ldflags` version stamps, static binaries, multi-stage Docker builds, systemd and Supervisor | `go run ./23-deployment` |
+| 24 | [Performance](24-performance/main.go) | Benchmarks with `b.Loop`, CPU and memory profiles with `pprof`, reducing allocations, escape analysis, differential fuzzing | `go run ./24-performance` |
 
 ### Lesson 10 examples
 
@@ -242,6 +243,24 @@ docker run --rm -p 8080:8080 go-service
 
 Config for running it under systemd or Supervisor is in [`23-deployment/deploy`](23-deployment/deploy).
 
+### Lesson 24 examples
+
+```bash
+go run ./24-performance
+go test -bench=. -benchmem -run='^$' ./24-performance
+go test -bench=Summarise/naive -run='^$' -cpuprofile=cpu.prof ./24-performance
+go tool pprof -top -cum cpu.prof
+go test -fuzz=FuzzVersionsAgree -fuzztime=20s ./24-performance
+```
+
+To profile a running service, start it, then send it traffic while `pprof` records:
+
+```bash
+go run ./24-performance -serve
+go tool pprof -top 'http://localhost:6060/debug/pprof/profile?seconds=5'
+for i in $(seq 200); do curl -s 'localhost:8080/report?version=naive' >/dev/null; done
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -258,6 +277,7 @@ Config for running it under systemd or Supervisor is in [`23-deployment/deploy`]
 - **Lesson 21:** run `-serve`, queue a slow `sleep` job, `kill -9` the worker, restart it and watch the job recover.
 - **Lesson 22:** run the import with `-batch=1` and compare the time with the default of 1000.
 - **Lesson 23:** build for `linux/arm64`, try to run it on your machine and read the `exec format error`.
+- **Lesson 24:** put `regexp.MustCompile` back inside the loop of `SummariseCompiledOnce` and rerun the benchmark.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
