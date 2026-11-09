@@ -67,6 +67,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 17 | [Databases](17-databases/main.go) | `database/sql` with SQLite, placeholders vs SQL injection, NULLs, transactions, prepared statements | `go run ./17-databases` |
 | 18 | [Config & logging](18-config-logging/main.go) | Env vars and flags into a typed `Config`, validation with `errors.Join`, `log/slog` text/JSON, `With`, request IDs from ctx, redacting secrets | `go run ./18-config-logging` |
 | 19 | [Graceful shutdown](19-graceful-shutdown/main.go) | OS signals, `signal.NotifyContext`, `http.Server.Shutdown`, grace periods, draining background workers, shutdown order | `go run ./19-graceful-shutdown` |
+| 20 | [Advanced testing](20-advanced-testing/doc.go) | `httptest` recorders and servers, fakes and spies via interfaces, fuzz tests, the race detector, fake time with `testing/synctest` | `go test -race -v ./20-advanced-testing` |
 
 ### Lesson 10 examples
 
@@ -166,6 +167,17 @@ curl 'localhost:8080/slow?ms=2000'                # second terminal, then Ctrl+C
 curl -X POST 'localhost:8080/jobs?ms=2000'        # queue background work
 ```
 
+### Lesson 20 examples
+
+There's no `main` in this lesson: the tests are the lesson. Start with [`doc.go`](20-advanced-testing/doc.go), which gives the reading order.
+
+```bash
+go test -race -v ./20-advanced-testing
+go test -cover ./20-advanced-testing
+go test -fuzz=FuzzMoneyRoundTrip -fuzztime=10s ./20-advanced-testing
+go test -fuzz=FuzzPlaceOrderBody -fuzztime=10s ./20-advanced-testing
+```
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -178,6 +190,7 @@ curl -X POST 'localhost:8080/jobs?ms=2000'        # queue background work
 - **Lesson 17:** delete `defer tx.Rollback()` in `PlaceOrder` and see a leaked transaction lock the database.
 - **Lesson 18:** delete `WithAttrs` from `contextHandler` and watch `TestRequestIDSurvivesWith` catch the lost request IDs.
 - **Lesson 19:** change `context.WithoutCancel(ctx)` to plain `ctx` in `Pool.Run` and see every in-flight job abort the moment the signal arrives.
+- **Lesson 20:** swap `FormatMoney` for the simple arithmetic version in `doc.go` and let the fuzzer find the bug your tests missed.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP
