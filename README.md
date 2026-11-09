@@ -70,6 +70,7 @@ Work through them in order. Each one builds on the last. Progress and planned fu
 | 20 | [Advanced testing](20-advanced-testing/doc.go) | `httptest` recorders and servers, fakes and spies via interfaces, fuzz tests, the race detector, fake time with `testing/synctest` | `go test -race -v ./20-advanced-testing` |
 | 21 | [Laravel ↔ Go queue worker](21-queue-worker/main.go) | Sharing a JSON job contract with Laravel, crash-safe `BLMOVE`, retries with backoff, transactions, reporting back through `queue:work` | `go run ./21-queue-worker` |
 | 22 | [Project: CSV importer](22-csv-importer/main.go) | Streaming validation, batched upserts, a rejects file, stdout/stderr/exit-code contract with Laravel's `Process`, clean timeouts | `go run ./22-csv-importer -demo` |
+| 23 | [Deployment](23-deployment/main.go) | Cross-compiling, `-ldflags` version stamps, static binaries, multi-stage Docker builds, systemd and Supervisor | `go run ./23-deployment` |
 
 ### Lesson 10 examples
 
@@ -219,6 +220,28 @@ php artisan customers:import customers.csv --dry-run
 php artisan customers:import customers.csv
 ```
 
+### Lesson 23 examples
+
+```bash
+go run ./23-deployment                    # builds real binaries for 4 platforms
+go test -v ./23-deployment
+go test -short ./23-deployment            # skips the tests that compile binaries
+
+go run ./23-deployment -serve
+curl localhost:8080/version
+
+./23-deployment/release.sh v1.0.0         # every platform into dist/, with checksums
+```
+
+Build the Docker image from the repo root, because `go.mod` lives there:
+
+```bash
+docker build -f 23-deployment/Dockerfile --build-arg VERSION=v1.0.0 -t go-service .
+docker run --rm -p 8080:8080 go-service
+```
+
+Config for running it under systemd or Supervisor is in [`23-deployment/deploy`](23-deployment/deploy).
+
 ## Things to try
 
 - **Lesson 04:** run it several times and watch the map iteration order change.
@@ -234,6 +257,7 @@ php artisan customers:import customers.csv
 - **Lesson 20:** swap `FormatMoney` for the simple arithmetic version in `doc.go` and let the fuzzer find the bug your tests missed.
 - **Lesson 21:** run `-serve`, queue a slow `sleep` job, `kill -9` the worker, restart it and watch the job recover.
 - **Lesson 22:** run the import with `-batch=1` and compare the time with the default of 1000.
+- **Lesson 23:** build for `linux/arm64`, try to run it on your machine and read the `exec format error`.
 - **Lesson 12:** break `IsPalindrome` on purpose and see how the table-driven test reports which case failed.
 
 ## Using Go alongside PHP

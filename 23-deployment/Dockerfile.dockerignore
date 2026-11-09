@@ -1,0 +1,6 @@
+# Docker sends the build context to the builder. Ignore everything and allow
+# only what's needed, so .env files, .git and the other lessons stay out.
+*
+!go.mod
+!go.sum
+!23-deployment

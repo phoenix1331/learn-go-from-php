@@ -1,0 +1,37 @@
+# systemd unit: Linux's built-in way to keep a program running.
+#
+#   sudo cp go-service.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now go-service
+#   systemctl status go-service
+#   journalctl -u go-service -f        # the logs, like `tail -f`
+
+[Unit]
+Description=Go service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+# Listening on 127.0.0.1 means only this machine can connect, such as nginx
+# or your Laravel app on the same server.
+ExecStart=/usr/local/bin/go-service -serve -addr=127.0.0.1:8080
+# Optional secrets and settings. The leading - means it's fine if missing.
+EnvironmentFile=-/etc/go-service.env
+
+# Start it again if it crashes, but not after a clean stop.
+Restart=on-failure
+RestartSec=2s
+
+# How long Go gets after SIGTERM before SIGKILL. Must exceed the grace period
+# in service.go.
+TimeoutStopSec=15s
+
+# Security: run as a throwaway user that can't change the system.
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
